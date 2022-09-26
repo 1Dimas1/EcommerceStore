@@ -43,6 +43,7 @@
 			</div> <!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group  .// -->
+
 {#	<article class="filter-group">#}
 {#		<header class="card-header">#}
 {#			<a href="#" data-toggle="collapse" data-target="#collapse_4" aria-expanded="true" class="">#}
@@ -54,68 +55,47 @@
 {#			<div class="card-body">#}
 {#			  <label class="checkbox-btn">#}
 {#			    <input type="checkbox">#}
-{#			    <span class="btn btn-light"> XS </span>#}
+{#			    <span class="btn btn-light"> S </span>#}
 {#			  </label>#}
 {##}
 {#			  <label class="checkbox-btn">#}
 {#			    <input type="checkbox">#}
-{#			    <span class="btn btn-light"> SM </span>#}
+{#			    <span class="btn btn-light"> M </span>#}
 {#			  </label>#}
 {##}
 {#			  <label class="checkbox-btn">#}
 {#			    <input type="checkbox">#}
-{#			    <span class="btn btn-light"> LG </span>#}
-{#			  </label>#}
-{##}
-{#			  <label class="checkbox-btn">#}
-{#			    <input type="checkbox">#}
-{#			    <span class="btn btn-light"> XXL </span>#}
+{#			    <span class="btn btn-light"> L </span>#}
 {#			  </label>#}
 {#		</div><!-- card-body.// -->#}
 {#		</div>#}
 {#	</article> <!-- filter-group .// -->#}
-{##}
-{#	<article class="filter-group">#}
-{#		<header class="card-header">#}
-{#			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">#}
-{#				<i class="icon-control fa fa-chevron-down"></i>#}
-{#				<h6 class="title">Price range </h6>#}
-{#			</a>#}
-{#		</header>#}
-{#		<div class="filter-content collapse show" id="collapse_3" style="">#}
-{#			<div class="card-body">#}
-{##}
-{#				<div class="form-row">#}
-{#				<div class="form-group col-md-6">#}
-{#				  <label>Min</label>#}
-{#				  <!-- <input class="form-control" placeholder="$0" type="number"> -->#}
-{#				  	<select class="mr-2 form-control">#}
-{#						<option value="0">$0</option>#}
-{#						<option value="50">$50</option>#}
-{#						<option value="100">$100</option>#}
-{#						<option value="150">$150</option>#}
-{#						<option value="200">$200</option>#}
-{#						<option value="500">$500</option>#}
-{#						<option value="1000">$1000</option>#}
-{#					</select>#}
-{#				</div>#}
-{#				<div class="form-group text-right col-md-6">#}
-{#				  <label>Max</label>#}
-{#				  	<select class="mr-2 form-control">#}
-{#						<option value="50">$50</option>#}
-{#						<option value="100">$100</option>#}
-{#						<option value="150">$150</option>#}
-{#						<option value="200">$200</option>#}
-{#						<option value="500">$500</option>#}
-{#						<option value="1000">$1000</option>#}
-{#						<option value="2000">$2000+</option>#}
-{#					</select>#}
-{#				</div>#}
-{#				</div> <!-- form-row.// -->#}
-{#				<button class="btn btn-block btn-primary">Apply</button>#}
-{#			</div><!-- card-body.// -->#}
-{#		</div>#}
-{#	</article> <!-- filter-group .// -->#}
+
+	<article class="filter-group">
+		<header class="card-header">
+			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+				<i class="icon-control fa fa-chevron-down"></i>
+				<h6 class="title">Price range </h6>
+			</a>
+		</header>
+		<div class="filter-content collapse show" id="collapse_3" style="">
+			<div class="card-body">
+                <form action="{% url 'filter' %}" class="search" method="get">
+				<div class="form-row">
+				<div class="form-group col-md-6">
+				  <label>Min</label>
+				   <input class="form-control" placeholder="$0" type="number" name="min_price">
+				</div>
+				<div class="form-group text-right col-md-6">
+				  <label>Max</label>
+                    <input class="form-control" placeholder="$0" type="number" name="max_price">
+				</div>
+				</div> <!-- form-row.// -->
+				<button class="btn btn-block btn-primary" type="submit">Apply</button>
+                </form>
+			</div><!-- card-body.// -->
+		</div>
+	</article> <!-- filter-group .// -->
 
 </div> <!-- card.// -->
 
@@ -153,7 +133,7 @@
     {% endfor %}
     {% else %}
     <div class="center-block">
-    <h2>No result found. Please try again.</h2>
+    <h2>No results found. Please try again.</h2>
     </div>
     {% endif %}
 </div> <!-- row end.// -->

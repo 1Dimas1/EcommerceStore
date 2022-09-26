@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
+from accounts.models import UserProfile
 from carts.models import CartItem
 from orders.models import OrderProduct
 from .forms import ReviewForm
-from .models import Product, ReviewRating, ProductGallery
+from .models import Product, ReviewRating, ProductGallery, Variation
 from category.models import Category
 from carts.views import _cart_id
 from django.core.paginator import Paginator
@@ -50,6 +51,10 @@ def product_detail(request, category_slug, product_slug):
 
     reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
 
+    user_profiles = []
+    for review in reviews:
+        user_profiles.append(UserProfile.objects.get(user_id=review.user.id))
+
     product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
 
     context = {
@@ -58,8 +63,30 @@ def product_detail(request, category_slug, product_slug):
         'order_product': order_product,
         'reviews': reviews,
         'product_gallery': product_gallery,
+        'user_profiles': user_profiles
     }
     return render(request, 'store/product_detail.html', context)
+
+
+def filter(request):
+    products = Product.objects.all()
+    product_count = products.count()
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price == '' and max_price != '':
+        products = Product.objects.filter(price__lte=max_price)
+        product_count = products.count()
+    if min_price != '' and max_price == '':
+        products = Product.objects.filter(price__gte=min_price)
+        product_count = products.count()
+    if min_price != '' and max_price != "":
+        products = Product.objects.filter(price__range=(min_price, max_price))
+        product_count = products.count()
+    context = {
+        'products': products,
+        'product_count': product_count,
+    }
+    return render(request, 'store/store.html', context)
 
 
 def search(request):
@@ -68,11 +95,14 @@ def search(request):
         if keyword:
             products = Product.objects.order_by('-created_date').filter(Q(product_description__icontains=keyword) | Q(product_name__icontains=keyword))
             product_count = products.count()
-    context = {
-        'products': products,
-        'product_count': product_count,
-    }
-    return render(request, 'store/store.html', context)
+            context = {
+                'products': products,
+                'product_count': product_count,
+            }
+            return render(request, 'store/store.html', context)
+        else:
+            context = {'product_count': 0}
+            return render(request, 'store/store.html', context)
 
 
 def submit_review(request, product_id):
