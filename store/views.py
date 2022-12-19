@@ -13,17 +13,16 @@ from django.contrib import messages
 
 
 def store(request, category_slug=None):
-
     if category_slug is not None:
         categories = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=categories, is_available=True)
-        paginator = Paginator(products, 2)
+        paginator = Paginator(products, 4)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
     else:
         products = Product.objects.all().filter(is_available=True).order_by('id')
-        paginator = Paginator(products, 4)
+        paginator = Paginator(products, 6)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
@@ -41,6 +40,7 @@ def product_detail(request, category_slug, product_slug):
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
     except Exception as e:
         raise e
+
     if request.user.is_authenticated:
         try:
             order_product = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
@@ -51,10 +51,6 @@ def product_detail(request, category_slug, product_slug):
 
     reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
 
-    user_profiles = []
-    for review in reviews:
-        user_profiles.append(UserProfile.objects.get(user_id=review.user.id))
-
     product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
 
     context = {
@@ -63,12 +59,11 @@ def product_detail(request, category_slug, product_slug):
         'order_product': order_product,
         'reviews': reviews,
         'product_gallery': product_gallery,
-        'user_profiles': user_profiles
     }
     return render(request, 'store/product_detail.html', context)
 
 
-def filter(request):
+def filter_products(request):
     products = Product.objects.all()
     product_count = products.count()
     min_price = request.GET.get('min_price')

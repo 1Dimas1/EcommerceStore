@@ -4,5 +4,5 @@ Hi {{ user.first_name }},
 
 Your order has been received.
 Order Number: {{ order.order_number }}
-
+To see order details click on this link: http://{{domain}}{{ order.get_url }}
 {% endautoescape %}

@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
@@ -16,6 +17,7 @@ def payments(request):
     body = json.loads(request.body)
     order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
 
+    # Storing transaction details in Payment model
     payment = Payment(
         user=request.user,
         payment_id=body['transID'],
@@ -57,10 +59,12 @@ def payments(request):
     CartItem.objects.filter(user=request.user).delete()
 
     # Sending order received email to customer
+    current_site = get_current_site(request)
     mail_subject = 'Thank you for your order'
     message = render_to_string('orders/order_received_email.html', {
         'user': request.user,
         'order': order,
+        'domain': current_site,
     })
     to_email = request.user.email
     send_email = EmailMessage(mail_subject, message, to=[to_email])

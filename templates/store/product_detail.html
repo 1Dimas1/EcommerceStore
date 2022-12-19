@@ -142,10 +142,9 @@
         </div>
 	</header>
     {% for review in reviews %}
-        {% for user_profile in user_profiles %}
         <article class="box mb-3">
             <div class="icontext w-100">
-                <img src="{% if review.user.id == user_profile.user.id %}{{ user_profile.profile_picture.url }}{% endif %}" class="img-xs icon rounded-circle">
+                <img src="{% if review.user.userprofile.profile_picture %}{{ review.user.userprofile.profile_picture.url }}{% endif %}" class="img-xs icon rounded-circle">
                 <div class="text">
                     <span class="date text-muted float-md-right">{{ review.updated_at }} </span>
                     <h6 class="mb-1">{{ review.user.full_name}} </h6>
@@ -168,7 +167,6 @@
                 </p>
             </div>
         </article>
-            {% endfor %}
     {% endfor %}
 
 
